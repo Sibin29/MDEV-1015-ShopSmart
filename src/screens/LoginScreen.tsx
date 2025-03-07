@@ -14,7 +14,7 @@ const LoginScreen = () => {
     if (result.success) {
       navigation.navigate('CustomerHomeScreen' as never);
     } else {
-      alert(result.message);
+      alert('result.message');
     }
   };
 
