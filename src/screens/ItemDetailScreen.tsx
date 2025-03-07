@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
 });
 
 export default ItemDetail;
-function alert(arg0: string) {
-    throw new Error('Function not implemented.');
+function alert(message: string) {
+    throw new Error(message);
 }
 

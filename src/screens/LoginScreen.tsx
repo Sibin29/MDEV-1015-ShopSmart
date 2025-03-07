@@ -86,7 +86,9 @@ const styles = StyleSheet.create({
 });
 
 export default LoginScreen;
-function alert(message: string | undefined) {
-    throw new Error('Function not implemented.');
+
+// Display error message returned from controller
+function alert(message: string) {
+    throw new Error(message);
 }
 

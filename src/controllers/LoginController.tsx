@@ -5,7 +5,7 @@ export const handleLogin = (email: string, password: string) => {
     }
   
     // API call for login (@Sibin -- replace with real login logic for firebase)
-    const isValidUser = email === 'test@example.com' && password === 'password123';
+    const isValidUser = email === 'email' && password === 'password';
   
     if (isValidUser) {
       return { success: true };

@@ -95,6 +95,6 @@ const styles = StyleSheet.create({
 
 export default LogInPartnerScreen;
 function alert(message: string | undefined) {
-    throw new Error('Function not implemented.');
+    throw new Error(message);
 }
 
