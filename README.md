@@ -90,8 +90,20 @@ If you're having issues getting the above steps to work, see the [Troubleshootin
 
 To learn more about React Native, take a look at the following resources:
 
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+
+#For StackNavigation Issues due to package errors follow the below steps
+
+Solution:
+
+Install the module: Ensure that you have installed @react-navigation/native-stack and its dependencies:
+'npm install @react-navigation/native-stack'
+
+Install dependencies: If you haven't already, you need to install the core dependencies of React Navigation:
+'npm install @react-navigation/native @react-navigation/stack npm install react-native-screens react-native-safe-area-context'
+
+Install TypeScript types: If you are using TypeScript, you need to install the type declarations for React Navigation:
+'npm install --save-dev @types/react @types/react-native'
+
+Clear cache and restart: Sometimes clearing and restarting the development server can resolve issues.
+'npm start -- --reset-cache'
+
