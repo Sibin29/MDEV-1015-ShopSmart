@@ -17,7 +17,7 @@ export const useWelcomeController = () => {
   };
 
   const handleSignup = () => {
-    navigation.navigate('SignupScreen' as never); 
+    navigation.navigate('SignUpScreen' as never); 
   };
 
   return {
