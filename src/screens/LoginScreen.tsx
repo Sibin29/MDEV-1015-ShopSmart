@@ -9,7 +9,7 @@ const LoginScreen = () => {
   const navigation = useNavigation();
 
   const handleSubmit = async () => {
-    const result = handleLogin(email, password);
+    const result = await handleLogin(email, password);
 
     if (result.success) {
       navigation.navigate('CustomerHomeScreen' as never);

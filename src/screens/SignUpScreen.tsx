@@ -13,7 +13,7 @@ const SignUpScreen = () => {
   const navigation = useNavigation();
 
   const handleSubmit = async () => {
-    const result = handleSignUp(email, password, rpassword); // Calling the controller function
+    const result = await handleSignUp(fname,lname,phone,email,password,rpassword); // Calling the controller function
 
     if (result.success) {
       navigation.navigate('CustomerHomeScreen' as never);
