@@ -1,4 +1,4 @@
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
 import {firestore,auth} from "../firebase/firebase";
 import {addDoc,collection} from "@firebase/firestore";
 
@@ -32,7 +32,8 @@ export const handleSignUp = async (
         const response = await createUserWithEmailAndPassword(auth, email, password)
         .then(async(userCredential) => {
           // Signed up 
-          const user = userCredential.user;
+          const storeuser = userCredential.user;
+          await sendEmailVerification(storeuser);
           await addDoc(ref,data);
           return { success: true };
 

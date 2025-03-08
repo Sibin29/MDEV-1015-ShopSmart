@@ -16,7 +16,7 @@ const SignUpScreen = () => {
     const result = await handleSignUp(fname,lname,phone,email,password,rpassword); // Calling the controller function
 
     if (result.success) {
-      navigation.navigate('CustomerHomeScreen' as never);
+      navigation.navigate('LoginScreen' as never);
     } else {
       alert(result.message);
     }

@@ -22,7 +22,7 @@ const SignUpPartnerScreen = () => {
       );
 
       if (result.success) {
-        navigation.navigate('ManagerHomeScreen' as never);
+        navigation.navigate('LogInPartnerScreen' as never);
       } else {
         alert(result.message);
       }
