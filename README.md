@@ -90,7 +90,7 @@ If you're having issues getting the above steps to work, see the [Troubleshootin
 
 To learn more about React Native, take a look at the following resources:
 
-Notes for Running 
+**Notes for Running** 
 
 #For StackNavigation Issues due to package errors follow the below steps
 
