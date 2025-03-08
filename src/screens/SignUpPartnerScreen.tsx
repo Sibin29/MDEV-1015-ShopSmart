@@ -20,11 +20,10 @@ const SignUpPartnerScreen = () => {
       const result = await handleSignUp(
         fname, lname, phone, storeName, storeNumber, address, email, password, rpassword
       );
-      console.log("res",result);
+
       if (result.success) {
         navigation.navigate('ManagerHomeScreen' as never);
       } else {
-        console.log('check',result.message);
         alert(result.message);
       }
     } catch (error) {

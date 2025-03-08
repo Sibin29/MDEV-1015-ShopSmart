@@ -14,19 +14,15 @@ export const handleSignUp = async (
     rpassword: string
   ) => {
 
-    console.log("in controller");
-
     // Add validation logic here as needed
     
     if(!(fname) || !(lname) || !(phone) || !(storeName) || !(storeNumber) || !(address) || !(email) || !(password) || !(rpassword)){
-      console.log("in controller2");
       return { success: false, message: 'Please Fill all the Fields!' };
     }
     else if (password !== rpassword) {
       return { success: false, message: 'Passwords do not match!' };
     }
     else{
-      console.log("finished verification");
       const ref = collection(firestore,"stores");
       const userauth = auth;
       let data = {
@@ -46,14 +42,12 @@ export const handleSignUp = async (
           // Signed up 
           const user = userCredential.user;
           await addDoc(ref,data);
-          console.log("user created");
           return { success: true };
 
         })
         .catch((error) => {
           const errorCode = error.code;
           const errorMessage = error.message;
-          console.log("user failed");
           return { success: false, message: 'SignUp Failed!' };
         });
         return response;
