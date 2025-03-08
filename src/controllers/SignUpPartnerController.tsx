@@ -56,6 +56,7 @@ export const handleSignUp = async (
           console.log("user failed");
           return { success: false, message: 'SignUp Failed!' };
         });
+        return response;
 
       }
       catch(error){

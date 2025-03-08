@@ -20,7 +20,7 @@ const UserProfileScreen = () => {
 
   const handleLogout = () => {
     auth.signOut();
-    navigation.navigate('LoginScreen' as never);
+    navigation.navigate('WelcomeScreen' as never);
   };
 
   return (

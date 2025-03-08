@@ -8,13 +8,13 @@ const LoginScreen = () => {
   const [password, setPassword] = useState('');
   const navigation = useNavigation();
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const result = handleLogin(email, password);
 
     if (result.success) {
       navigation.navigate('CustomerHomeScreen' as never);
     } else {
-      alert('result.message');
+      alert(result.message);
     }
   };
 
@@ -86,9 +86,3 @@ const styles = StyleSheet.create({
 });
 
 export default LoginScreen;
-
-// Display error message returned from controller
-function alert(message: string) {
-    throw new Error(message);
-}
-

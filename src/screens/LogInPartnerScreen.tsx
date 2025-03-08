@@ -9,9 +9,9 @@ const LogInPartnerScreen = () => {
   const [storenum, setStorenum] = useState('');
   const navigation = useNavigation();
 
-  const handleSubmit = () => {
-    const result = handleLogin(email, password, storenum);
-
+  const handleSubmit = async () => {
+    const result = await handleLogin(email, password, storenum);
+    console.log("login result:",result.success);
     if (result.success) {
       navigation.navigate('ManagerHomeScreen' as never);
     } else {
@@ -94,7 +94,3 @@ const styles = StyleSheet.create({
 });
 
 export default LogInPartnerScreen;
-function alert(message: string | undefined) {
-    throw new Error(message);
-}
-
