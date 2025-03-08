@@ -22,6 +22,7 @@ const SignUpPartnerScreen = () => {
       );
 
       if (result.success) {
+        alert('Verify Your Email before Logging In.');
         navigation.navigate('LogInPartnerScreen' as never);
       } else {
         alert(result.message);

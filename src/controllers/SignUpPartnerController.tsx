@@ -40,8 +40,8 @@ export const handleSignUp = async (
         const response = await createUserWithEmailAndPassword(auth, email, password)
         .then(async(userCredential) => {
           // Signed up 
-          const storeuser = userCredential.user;
-          await sendEmailVerification(storeuser);
+          const user = userCredential.user;
+          await sendEmailVerification(user);
           await addDoc(ref,data);
           return { success: true };
 

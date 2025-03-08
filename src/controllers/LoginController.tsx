@@ -13,7 +13,13 @@ export const handleLogin = async (email: string, password: string) => {
             .then((userCredential) => {
               // Logged in 
               const user = userCredential.user;
-              return { success: true };
+              if(user.emailVerified){
+                return { success: true };
+              }
+              else{
+                await sendEmailVerification(user);
+                return { success: false, message: 'Please Verify the Email!' };
+              }
             })
             .catch((error) => {
               const errorCode = error.code;

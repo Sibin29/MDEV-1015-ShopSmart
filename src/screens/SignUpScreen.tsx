@@ -16,6 +16,7 @@ const SignUpScreen = () => {
     const result = await handleSignUp(fname,lname,phone,email,password,rpassword); // Calling the controller function
 
     if (result.success) {
+      alert('Verify Your Email before Logging In.');
       navigation.navigate('LoginScreen' as never);
     } else {
       alert(result.message);
