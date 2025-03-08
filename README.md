@@ -90,12 +90,11 @@ If you're having issues getting the above steps to work, see the [Troubleshootin
 
 To learn more about React Native, take a look at the following resources:
 
-Started
+Notes for Running 
 
 #For StackNavigation Issues due to package errors follow the below steps
 
 Solution:
-
 Install the module: Ensure that you have installed @react-navigation/native-stack and its dependencies:
 'npm install @react-navigation/native-stack'
 
@@ -107,4 +106,5 @@ Install TypeScript types: If you are using TypeScript, you need to install the t
 
 Clear cache and restart: Sometimes clearing and restarting the development server can resolve issues.
 'npm start -- --reset-cache'
+
 
