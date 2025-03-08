@@ -11,7 +11,7 @@ export const handleSignUp = async (
   rpassword: string
 ) => {
     // Validate the passwords match
-    if(!isEmpty(fname) || !isEmpty(lname) || !isEmpty(phone)|| !isEmpty(email) || !isEmpty(password) || !isEmpty(rpassword)){
+    if(!(fname) || !(lname) || !(phone)|| !(email) || !(password) || !(rpassword)){
       return { success: false, message: 'Please Fill all the Fields!' };
     }
     else if (password !== rpassword) {
@@ -40,8 +40,9 @@ export const handleSignUp = async (
         .catch((error) => {
           const errorCode = error.code;
           const errorMessage = error.message;
+          return { success: false, message: 'SignUp Failed!' };
         });
-
+        return response;
       }
       catch(error){
         console.log(error);
@@ -50,6 +51,3 @@ export const handleSignUp = async (
     return { success: true };
   };
   
-  const isEmpty = (obj: string) => { 
-    return JSON.stringify(obj) === '{}'; 
-  }; 

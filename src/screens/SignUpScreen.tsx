@@ -12,7 +12,7 @@ const SignUpScreen = () => {
   const [rpassword, setRpassword] = useState('');
   const navigation = useNavigation();
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const result = handleSignUp(email, password, rpassword); // Calling the controller function
 
     if (result.success) {
@@ -108,7 +108,5 @@ const styles = StyleSheet.create({
 });
 
 export default SignUpScreen;
-function alert(message: string | undefined) {
-    throw new Error(message);
-}
+
 

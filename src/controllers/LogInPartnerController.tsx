@@ -8,20 +8,17 @@ export const handleLogin = async (email: string, password: string, storenum: str
     }
     else{
       // API call for partner login
-      console.log("insidee login else");
       const auth = getAuth();
       const response = await signInWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
           // Logged in 
           const user = userCredential.user;
           
-          console.log("user loggd in");
           return { success: true };
         })
         .catch((error) => {
           const errorCode = error.code;
           const errorMessage = error.message;
-          console.log("user loggin error", errorMessage);
           return { success: false, message: errorMessage};
         });
         return response;

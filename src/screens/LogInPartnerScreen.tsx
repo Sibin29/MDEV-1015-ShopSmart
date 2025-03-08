@@ -11,7 +11,6 @@ const LogInPartnerScreen = () => {
 
   const handleSubmit = async () => {
     const result = await handleLogin(email, password, storenum);
-    console.log("login result:",result.success);
     if (result.success) {
       navigation.navigate('ManagerHomeScreen' as never);
     } else {
