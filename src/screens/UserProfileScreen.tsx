@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { getUserProfile } from '../controllers/UserProfileController';
+import { auth } from '../firebase/firebase';
 
 const UserProfileScreen = () => {
   const [user, setUser] = useState({
@@ -18,6 +19,7 @@ const UserProfileScreen = () => {
   }, []);
 
   const handleLogout = () => {
+    auth.signOut();
     navigation.navigate('LoginScreen' as never);
   };
 

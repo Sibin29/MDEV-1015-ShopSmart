@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import WelcomeScreen from './src/screens/WelcomeScreen';
@@ -10,12 +10,25 @@ import ManagerHomeScreen from './src/screens/ManagerHomeScreen';
 import CustomerHomeScreen from './src/screens/CustomerHomeScreen';
 import UserProfileScreen from './src/screens/UserProfileScreen';
 import InventoryScreen from './src/screens/InventoryScreen';
+import { onAuthStateChanged, User } from 'firebase/auth';
+import { auth } from './src/firebase/firebase';
 
 // Create Stack Navigator
 const Stack = createStackNavigator();
 
 // Root component
 export default function App() {
+  
+  const [user,setUser] = useState<User | null> (null); 
+
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      setUser(user);
+    });
+  })
+
+  //{user ? () : ()}  //to use for checking ned to get user tyee first
+
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="WelcomeScreen">
