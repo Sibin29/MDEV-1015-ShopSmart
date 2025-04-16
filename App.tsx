@@ -12,6 +12,7 @@ import UserProfileScreen from './src/screens/UserProfileScreen';
 import InventoryScreen from './src/screens/InventoryScreen';
 import ItemDetailScreen from './src/screens/ItemDetailScreen';
 import CartScreen from './src/screens/CartScreen';
+import AddItemToInventoryScreen from './src/screens/AddItemToInventoryScreen';
 import { onAuthStateChanged, User } from 'firebase/auth';
 import { auth } from './src/firebase/firebase';
 
@@ -101,6 +102,11 @@ export default function App() {
           name="CartScreen"
           component={CartScreen}
           options={{ title: 'My Cart' }}
+        />
+        <Stack.Screen
+          name="AddItemToInventoryScreen"
+          component={AddItemToInventoryScreen}
+          options={{ title: 'Add Item to Inventory' }}
         />
       </Stack.Navigator>
     </NavigationContainer>
