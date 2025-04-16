@@ -12,6 +12,7 @@ export const getInventoryItemsForUser = async (): Promise<InventoryItem[]> => {
   if (!user) return [];
 
   // Get the shop owned by this user
+  console.log('Fetching shop for user:', user.uid);
   const shopQuery = query(collection(firestore, 'shops'), where('ownerUid', '==', user.uid));
   const shopSnapshot = await getDocs(shopQuery);
   
@@ -19,7 +20,7 @@ export const getInventoryItemsForUser = async (): Promise<InventoryItem[]> => {
 
   const shopData = shopSnapshot.docs[0].data();
 
-  const inventory = shopData.inventory || [];
+  const inventory = shopData.inventory;
 
   return inventory;
 };
