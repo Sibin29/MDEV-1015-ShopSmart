@@ -1,11 +1,37 @@
-export const getInventoryItems = () => {
-    return [
-      { id: '1', name: 'Apple', image: 'https://placehold.co/200x200/B3D9FF/007BFF/png?text=Apple' },
-      { id: '2', name: 'Orange', image: 'https://placehold.co/200x200/B3D9FF/007BFF/png?text=Orange' },
-      { id: '3', name: 'Shampoo', image: 'https://placehold.co/200x200/B3D9FF/007BFF/png?text=Shampoo' },
-      { id: '4', name: 'Toothpaste', image: 'https://placehold.co/200x200/B3D9FF/007BFF/png?text=Toothpaste' },
-      { id: '5', name: 'Detergent', image: 'https://placehold.co/200x200/B3D9FF/007BFF/png?text=Detergent' },
-      { id: '6', name: 'Chocolates', image: 'https://placehold.co/200x200/B3D9FF/007BFF/png?text=Chocolates' }
-    ];
-  };
-  
+import { collection, getDocs, query, where } from 'firebase/firestore';
+import { initializeApp } from 'firebase/app';
+import { getFirestore } from 'firebase/firestore';
+import { firebaseConfig } from '../firebase/firebase';
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+export interface InventoryItem {
+  itemName: string;
+  quantity: number;
+  price: number;
+  shopOwnerUid: string;
+}
+
+export const getInventoryByOwnerUid = async (
+  ownerUid: string
+): Promise<InventoryItem[]> => {
+  try {
+    const shopsRef = collection(db, 'shops');
+    const q = query(shopsRef, where('ownerUid', '==', ownerUid));
+    const querySnapshot = await getDocs(q);
+
+    if (querySnapshot.empty) {
+      console.warn('No shop found for this owner.');
+      return [];
+    }
+
+    const shopDoc = querySnapshot.docs[0]; // Assuming one shop per owner
+    const inventory: InventoryItem[] = shopDoc.data().inventory || [];
+
+    return inventory;
+  } catch (error) {
+    console.error('Error fetching inventory:', error);
+    return [];
+  }
+};

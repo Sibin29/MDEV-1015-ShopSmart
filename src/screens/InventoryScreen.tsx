@@ -1,21 +1,37 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, TextInput, TouchableOpacity, StyleSheet, Image } from 'react-native';
-import { useNavigation, NavigationProp } from '@react-navigation/native';
-import { getInventoryItems } from '../controllers/InventoryController';
+import {
+  View,
+  Text,
+  FlatList,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  Image,
+} from 'react-native';
+import { useNavigation, useRoute, NavigationProp, RouteProp } from '@react-navigation/native';
+import { getInventoryByOwnerUid, InventoryItem } from '../controllers/InventoryController';
 
 type RootStackParamList = {
   CartScreen: undefined;
   UserProfileScreen: undefined;
-  ItemDetail: { itemName: string; itemImage: string };
+  ItemDetailScreen: { item: InventoryItem};   // pass the whole item
+  InventoryScreen: { shopId: string };
 };
 
 const InventoryScreen = () => {
-  const [items, setItems] = useState<{ id: string; name: string; image: string; }[]>([]);
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  const route = useRoute<RouteProp<RootStackParamList, 'InventoryScreen'>>();
+  const { shopId } = route.params;
+
+  const [items, setItems] = useState<InventoryItem[]>([]);
 
   useEffect(() => {
-    setItems(getInventoryItems());
-  }, []);
+    const fetchItems = async () => {
+      const fetchedItems = await getInventoryByOwnerUid(shopId);
+      setItems(fetchedItems);
+    };
+    fetchItems();
+  }, [shopId]);
 
   return (
     <View style={styles.container}>
@@ -28,92 +44,55 @@ const InventoryScreen = () => {
           <Text style={styles.profileIcon}>👤</Text>
         </TouchableOpacity>
       </View>
+
       <Text style={styles.title}>Items</Text>
+
       <FlatList
         data={items}
+        numColumns={2}
+        keyExtractor={(_, idx) => idx.toString()}
         renderItem={({ item }) => (
           <TouchableOpacity
-            onPress={() => 
-              navigation.navigate('ItemDetail', {
-                itemName: item.name,
-                itemImage: item.image,
-              })
-            }
             style={styles.shopItemContainer}
+            onPress={() =>
+              navigation.navigate('ItemDetailScreen', { item })
+            }
           >
             <View style={styles.shopItem}>
-              <Image source={{ uri: item.image }} style={styles.shopImage} />
+              <Image
+                source={{
+                  uri: `https://placehold.co/1000x200/B3D9FF/007BFF/png?text=${item.itemName}`,
+                }}
+                style={styles.shopImage}
+              />
             </View>
-            <Text style={styles.shopName}>{item.name}</Text>
+            <Text style={styles.shopName}>{item.itemName}</Text>
           </TouchableOpacity>
         )}
-        keyExtractor={(item) => item.id}
-        numColumns={2}
       />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 16,
-    backgroundColor: '#f5f5f5',
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 20,
-  },
+  container: { flex: 1, padding: 16, backgroundColor: '#f5f5f5' },
+  header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 },
   searchBar: {
-    flex: 1,
-    height: 40,
-    borderColor: '#ccc',
-    borderWidth: 1,
-    borderRadius: 8,
-    paddingHorizontal: 10,
-    marginRight: 10,
+    flex: 1, height: 40, borderColor: '#ccc', borderWidth: 1,
+    borderRadius: 8, paddingHorizontal: 10, marginRight: 10,
   },
-  profileIcon: {
-    fontSize: 24,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 16,
-  },
-  shopItemContainer: {
-    flex: 1,
-    alignItems: 'center',
-    marginBottom: 40,
-  },
+  profileIcon: { fontSize: 24 },
+  title: { fontSize: 24, fontWeight: 'bold', marginBottom: 16 },
+  shopItemContainer: { flex: 1, alignItems: 'center', marginBottom: 40 },
   shopItem: {
-    width: '90%',
-    height: 150,
-    padding: 16,
-    backgroundColor: '#B3D9FF',
-    borderRadius: 12,
-    margin:16,
-    justifyContent: 'center',
-    alignItems: 'center',
-    elevation: 4,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
+    width: '90%', height: 150, padding: 16,
+    backgroundColor: '#B3D9FF', borderRadius: 12,
+    justifyContent: 'center', alignItems: 'center',
+    elevation: 4, shadowColor: '#000', shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2, shadowRadius: 4,
   },
-  shopImage: {
-    width: 190,
-    height: 230,
-    resizeMode: 'contain',
-  },
-  shopName: {
-    marginTop: 8,
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#333',
-  },
+  shopImage: { width: 190, height: 230, resizeMode: 'contain' },
+  shopName: { marginTop: 8, fontSize: 16, fontWeight: 'bold', color: '#333' },
 });
 
 export default InventoryScreen;
