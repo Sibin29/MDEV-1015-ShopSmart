@@ -1,72 +1,134 @@
-import { getFirestore, doc, getDoc, setDoc, updateDoc, arrayUnion } from 'firebase/firestore';
+import {
+  getFirestore,
+  doc,
+  getDoc,
+  getDocs,
+  updateDoc,
+  arrayUnion,
+  arrayRemove,
+  setDoc,
+  collection,
+  query,
+  where,
+} from 'firebase/firestore';
+import { getAuth } from 'firebase/auth';
 import { initializeApp } from 'firebase/app';
 import { firebaseConfig } from '../firebase/firebase';
+import { Alert } from 'react-native';
 
-// Initialize Firebase app
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+const auth = getAuth(app);
 
-// Fetch item details by item name
-export const fetchItemDetails = async (itemName: string) => {
-  try {
-    const docRef = doc(db, 'items', itemName);
-    const docSnap = await getDoc(docRef);
+// Add or update item in user's cart and reduce inventory
+export const addToCart = async (
+  itemName: string,
+  quantity: number,
+  price: number,
+  shopOwnerUid: string
+) => {
+  const user = auth.currentUser;
+  if (!user) throw new Error('Not authenticated');
+  console.log('User:', shopOwnerUid);
 
-    if (docSnap.exists()) {
-      return docSnap.data();
-    } else {
-      throw new Error('Item not found');
-    }
-  } catch (error) {
-    console.error('Error fetching item details:', error);
-    throw error;
+  const shopsRef = collection(db, 'shops');
+  const q = query(shopsRef, where('ownerUid', '==', shopOwnerUid));
+  const shopQuerySnapshot = await getDocs(q);
+
+
+  if (shopQuerySnapshot.empty) {
+    console.log('Shop not found for this owner');
+  }
+
+  const shopDoc = shopQuerySnapshot.docs[0];
+  const shopRef = doc(db, 'shops', shopDoc.id);
+  const shopData = shopDoc.data();
+  const inventory = shopData.inventory || [];
+
+  const itemIndex = inventory.findIndex(
+    (item: any) => item.itemName === itemName
+  );
+  if (itemIndex === -1) throw new Error('Item not found in inventory');
+
+  const item = inventory[itemIndex];
+
+  if (item.quantity < quantity) {
+    Alert.alert('Not enough stock available');
+    return Error('Not enough stock available');
+  }
+
+  inventory[itemIndex].quantity -= quantity;
+
+  await updateDoc(shopRef, {
+    inventory,
+  });
+
+  const cartRef = doc(db, 'carts', user.uid);
+  const cartSnap = await getDoc(cartRef);
+
+  if (cartSnap.exists()) {
+    await updateDoc(cartRef, {
+      items: arrayUnion({ itemName, quantity, price, shopOwnerUid }),
+    });
+  } else {
+    await setDoc(cartRef, {
+      userId: user.uid,
+      items: [{ itemName, quantity, price, shopOwnerUid }],
+    });
   }
 };
 
-// Add an item to the cart
-export const addToCart = async (userId: string, itemName: string, quantity: number) => {
-  try {
-    const cartRef = doc(db, 'carts', `${userId}`);
+// Remove item from user's cart and restore inventory
+export const removeFromCart = async (
+  itemName: string,
+  quantity: number,
+  shopOwnerUid: string
+) => {
+  const user = auth.currentUser;
+  if (!user) throw new Error('Not authenticated');
+  console.log('Shop Owner from remove item fn:', shopOwnerUid);
 
-    const cartSnap = await getDoc(cartRef);
-    const cartData = cartSnap.exists() ? cartSnap.data() : null;
+  const shopsRef = collection(db, 'shops');
+  const q = query(shopsRef, where('ownerUid', '==', shopOwnerUid));
+  const shopQuerySnapshot = await getDocs(q);
 
-    if (cartData) {
-      // If cart exists, update the cart
+
+  if (shopQuerySnapshot.empty) {
+    console.log('Shop not found for this owner');
+  }
+
+  const shopDoc = shopQuerySnapshot.docs[0];
+  const shopRef = doc(db, 'shops', shopDoc.id);
+  const shopData = shopDoc.data();
+  const inventory = shopData.inventory || [];
+
+  const itemIndex = inventory.findIndex(
+    (item: any) => item.itemName === itemName
+  );
+  if (itemIndex === -1) console.log('Item not found in inventory');
+
+  // Restore inventory quantity
+  inventory[itemIndex].quantity += quantity;
+
+  await updateDoc(shopRef, {
+    inventory,
+  });
+
+  // Now remove the item from user's cart
+  const cartRef = doc(db, 'carts', user.uid);
+  const snap = await getDoc(cartRef);
+  if (!snap.exists()) console.log('Cart not found');
+  if (snap.exists()) {
+    const cartItemsList = snap.data().items;
+    const cartItemIndex = cartItemsList.findIndex(
+      (item: any) => item.itemName === itemName
+    );
+    if (cartItemIndex >= 0 && cartItemIndex < cartItemsList.length) {
+      cartItemsList.splice(cartItemIndex, 1); // remove item at index
+
       await updateDoc(cartRef, {
-        items: arrayUnion({ itemName, quantity }),
-      });
-    } else {
-      // If cart doesn't exist, create a new cart
-      await setDoc(cartRef, {
-        userId,
-        items: [{ itemName, quantity }],
+        items: cartItemsList,
       });
     }
-  } catch (error) {
-    console.error('Error adding to cart:', error);
-    throw error;
-  }
-};
-
-// Remove an item from the cart
-export const removeFromCart = async (userId: string, itemName: string) => {
-  try {
-    const cartRef = doc(db, 'carts', `${userId}`);
-    const cartSnap = await getDoc(cartRef);
-
-    if (cartSnap.exists()) {
-      const cartData = cartSnap.data();
-      const updatedItems = cartData.items.filter((item: any) => item.itemName !== itemName);
-
-      await updateDoc(cartRef, {
-        items: updatedItems,
-      });
-    } else {
-      throw new Error('Cart not found');
-    }
-  } catch (error) {
-    console.error('Error removing from cart:', error);
-    throw error;
-  }
+}
 };
