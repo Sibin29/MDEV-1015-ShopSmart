@@ -1,36 +1,75 @@
-import React, { useState } from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, Image, StyleSheet, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { getItemCost } from '../controllers/ItemDetailController';
+import { fetchItemDetails, addToCart, removeFromCart } from '../controllers/ItemDetailController';
 
 const ItemDetail: React.FC = () => {
   const navigation = useNavigation();
   const route = useRoute();
-  const { itemName, itemImage } = route.params as { itemName: string; itemImage: string };
+  const { itemName, userId, shopId } = route.params as { itemName: string, userId: string, shopId: string };
 
   const [quantity, setQuantity] = useState<number>(1);
   const [isInCart, setIsInCart] = useState<boolean>(false);
+  const [itemData, setItemData] = useState<any>(null);
+  const [loading, setLoading] = useState<boolean>(true);
 
-  const handleToggleCart = () => {
-    if (isInCart) {
-      alert(`${itemName} removed from cart`);
-    } else {
-      alert(`${itemName} added to cart with quantity ${quantity}`);
+  useEffect(() => {
+    const loadItemDetails = async () => {
+      try {
+        const data = await fetchItemDetails(itemName);
+        setItemData(data);
+      } catch (error) {
+        Alert.alert('Error', 'Could not load item details.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadItemDetails();
+  }, [itemName]);
+
+  const handleToggleCart = async () => {
+    try {
+      if (isInCart) {
+        await removeFromCart(userId, itemName);
+        Alert.alert(`${itemName} removed from cart`);
+      } else {
+        await addToCart(userId, itemName, quantity);
+        Alert.alert(`${itemName} added to cart with quantity ${quantity}`);
+      }
+      setIsInCart(!isInCart);
+    } catch (error) {
+      Alert.alert('Error', 'Could not update cart');
     }
-    setIsInCart(!isInCart);
   };
+
+  if (loading) {
+    return (
+      <View style={styles.loaderContainer}>
+        <ActivityIndicator size="large" color="#007BFF" />
+      </View>
+    );
+  }
+
+  if (!itemData) {
+    return (
+      <View style={styles.loaderContainer}>
+        <Text>Item not found</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
       {/* Item Image */}
-      <Image source={{ uri: itemImage }} style={styles.itemImage} />
+      <Image source={{ uri: 'https://placehold.co/200x200/B3D9FF/007BFF/png?text='+itemName}} style={styles.itemImage} />
 
       {/* Item Name */}
       <Text style={styles.itemName}>{itemName}</Text>
 
       {/* Item Cost */}
-      <Text style={styles.itemCost}>Cost: ${getItemCost(itemName).toFixed(2)}</Text>
+      <Text style={styles.itemCost}>Cost: ${itemData.price.toFixed(2)}</Text>
 
       {/* Quantity Picker */}
       <Text style={styles.label}>Select Quantity:</Text>
@@ -46,16 +85,19 @@ const ItemDetail: React.FC = () => {
         </Picker>
       </View>
 
-      {/* Toggle Button (Add to Cart / Remove from Cart) */}
+      {/* Toggle Button */}
       <TouchableOpacity style={styles.addButton} onPress={handleToggleCart}>
         <Text style={styles.addButtonText}>
           {isInCart ? 'Remove from Cart' : 'Add to Cart'}
         </Text>
       </TouchableOpacity>
 
-      {/* Go to Cart Button (Visible when item is in the cart) */}
+      {/* Go to Cart Button */}
       {isInCart && (
-        <TouchableOpacity style={styles.goToCartButton} onPress={() => navigation.navigate('CartScreen' as never)}>
+        <TouchableOpacity
+          style={styles.goToCartButton}
+          onPress={() => navigation.navigate('CartScreen' as never)}
+        >
           <Text style={styles.goToCartButtonText}>Go to Cart</Text>
         </TouchableOpacity>
       )}
@@ -68,6 +110,11 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 16,
     backgroundColor: '#ffffff',
+  },
+  loaderContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   itemImage: {
     width: '100%',
@@ -128,7 +175,3 @@ const styles = StyleSheet.create({
 });
 
 export default ItemDetail;
-function alert(message: string) {
-    throw new Error(message);
-}
-
