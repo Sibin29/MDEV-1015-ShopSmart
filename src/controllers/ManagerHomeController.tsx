@@ -1,12 +1,25 @@
-export const getShops = () => {
-    // Replace this with call to firebase API to get list of shops
-    // For now, returning a static list of items for demo
-    return [
-      { id: '1', name: 'Apple' },
-      { id: '2', name: 'Orange' },
-      { id: '3', name: 'Shampoo' },
-      { id: '4', name: 'Toothpaste' },
-      { id: '5', name: 'Detergent' }
-    ];
-  };
+import { collection, getDocs, query, where } from 'firebase/firestore';
+import { auth, firestore } from '../firebase/firebase';
+
+export interface InventoryItem {
+  itemName: string;
+  price: number;
+  quantity: number;
+}
+
+export const getInventoryItemsForUser = async (): Promise<InventoryItem[]> => {
+  const user = auth.currentUser;
+  if (!user) return [];
+
+  // Get the shop owned by this user
+  const shopQuery = query(collection(firestore, 'shops'), where('ownerUid', '==', user.uid));
+  const shopSnapshot = await getDocs(shopQuery);
   
+  if (shopSnapshot.empty) return [];
+
+  const shopData = shopSnapshot.docs[0].data();
+
+  const inventory = shopData.inventory || [];
+
+  return inventory;
+};
