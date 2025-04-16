@@ -44,7 +44,7 @@ const CustomerHomeScreen = () => {
               onPress={() =>
                 // @ts-ignore
                 navigation.navigate('InventoryScreen' as never, {
-                  ownerUid: item.ownerUid,
+                  shopId: item.ownerUid,
                   shopName: item.name,
                 } as never)
               }
