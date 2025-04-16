@@ -14,9 +14,9 @@ import {
   getCartItems,
   calculateTotalAmount,
   handleCheckout,
-  CartItem,
-  removeFromCart,
+  CartItem
 } from '../controllers/CartController';
+import { removeFromCart } from '../controllers/ItemDetailController';
 
 const CartScreen: React.FC = () => {
   const navigation = useNavigation();
@@ -40,7 +40,7 @@ const CartScreen: React.FC = () => {
 
   const totalAmount = calculateTotalAmount(cartItems);
 
-  const handleRemoveItem = (itemName: string) => {
+  const handleRemoveItem = (itemName: string, quantity: number, shopOwnerUid: string ) => {
     Alert.alert('Remove Item', `Are you sure you want to remove ${itemName} from the cart?`, [
       {
         text: 'Cancel',
@@ -49,7 +49,7 @@ const CartScreen: React.FC = () => {
       {
         text: 'Remove',
         onPress: () => {
-          removeFromCart(itemName);
+          removeFromCart(itemName, quantity, shopOwnerUid);
           setCartItems(prevItems => prevItems.filter(item => item.itemName !== itemName));
         },
       },
@@ -89,7 +89,7 @@ const CartScreen: React.FC = () => {
           </View>
           <TouchableOpacity
             style={styles.removeButton}
-            onPress={() => handleRemoveItem(item.itemName)}
+            onPress={() => handleRemoveItem(item.itemName, item.quantity, item.shopOwnerUid)}
           >
             <Text style={styles.removeButtonText}>Remove</Text>
           </TouchableOpacity>

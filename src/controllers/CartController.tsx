@@ -9,8 +9,9 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-// Define CartItem type
+// Define CartItem type 
 export interface CartItem {
+  shopOwnerUid: string;
   itemName: string;
   quantity: number;
   price: number;
@@ -35,56 +36,13 @@ export const getCartItems = async (): Promise<CartItem[]> => {
   const cartSnap = await getDoc(cartRef);
 
   if (cartSnap.exists()) {
+    console.log('Cart items:', cartSnap.data().items);
     return cartSnap.data().items;
   } else {
     return [];
   }
 };
 
-// Add or update item in cart
-export const addToCart = async (item: CartItem) => {
-  const userId = getCurrentUserId();
-  if (!userId) {
-    Alert.alert('Error', 'No user is logged in.');
-    return;
-  }
-
-  const cartRef = doc(db, 'carts', userId);
-  const cartSnap = await getDoc(cartRef);
-
-  if (cartSnap.exists()) {
-    const currentItems = cartSnap.data().items;
-    const itemIndex = currentItems.findIndex((i: CartItem) => i.itemName === item.itemName);
-
-    if (itemIndex > -1) {
-      currentItems[itemIndex].quantity += item.quantity;
-    } else {
-      currentItems.push(item);
-    }
-
-    await updateDoc(cartRef, { items: currentItems });
-  } else {
-    await setDoc(cartRef, { items: [item] });
-  }
-};
-
-// Remove item from cart
-export const removeFromCart = async (itemName: string) => {
-  const userId = getCurrentUserId();
-  if (!userId) {
-    Alert.alert('Error', 'No user is logged in.');
-    return;
-  }
-
-  const cartRef = doc(db, 'carts', userId);
-  const cartSnap = await getDoc(cartRef);
-
-  if (cartSnap.exists()) {
-    const currentItems = cartSnap.data().items;
-    const updatedItems = currentItems.filter((item: CartItem) => item.itemName !== itemName);
-    await updateDoc(cartRef, { items: updatedItems });
-  }
-};
 
 // Calculate total amount for cart
 export const calculateTotalAmount = (cartItems: CartItem[]): number => {
@@ -99,11 +57,11 @@ export const handleCheckout = (cartItems: CartItem[], navigate: Function) => {
   } else {
     Alert.alert('Your order has been placed!', 'Thank you for shopping with us!');
     deleteCart();
-    navigate();
+    navigate('CustomerHomeScreen' as never);
   }
 };
 
-// Clear cart
+// Clear the cart after checkout
 const deleteCart = async () => {
   const userId = getCurrentUserId();
   if (!userId) {
