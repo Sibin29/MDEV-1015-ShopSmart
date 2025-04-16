@@ -10,13 +10,17 @@ const LogInPartnerScreen = () => {
 
   const navigation = useNavigation();
 
+  const handleForgotPassword = () => {
+    navigation.navigate('ForgotPasswordScreen' as never);
+  };
+
   const handleSubmit = async () => {
     const result = await handleLogin(email, password);
     if (result.success) {
       navigation.navigate('ManagerHomeScreen' as never);
     } else {
       if ('message' in result) {
-        Alert.alert(result.message);
+        Alert.alert(typeof result.message === 'string' ? result.message : 'An unknown error occurred.');
       }
     }
   };
@@ -41,7 +45,7 @@ const LogInPartnerScreen = () => {
       <TouchableOpacity style={styles.button} onPress={handleSubmit}>
         <Text style={styles.buttonText}>Login</Text>
       </TouchableOpacity>
-      <TouchableOpacity>
+      <TouchableOpacity onPress={handleForgotPassword}>
         <Text style={styles.linkText}>Forgot Password?</Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={() => navigation.navigate('SignupPartnerScreen' as never)}>
@@ -89,4 +93,3 @@ const styles = StyleSheet.create({
 });
 
 export default LogInPartnerScreen;
-

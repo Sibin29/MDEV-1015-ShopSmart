@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, TextInput, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { handleLogin } from '../controllers/LoginController';
+import { Alert } from 'react-native';
 
 const LoginScreen = () => {
   const [email, setEmail] = useState('');
@@ -14,8 +15,14 @@ const LoginScreen = () => {
     if (result.success) {
       navigation.navigate('CustomerHomeScreen' as never);
     } else {
-      alert(result.message);
+      if ('message' in result) {
+        Alert.alert(result.message);
+      }
     }
+  };
+
+  const handleForgotPassword = () => {
+    navigation.navigate('ForgotPasswordScreen' as never);
   };
 
   return (
@@ -38,7 +45,7 @@ const LoginScreen = () => {
       <TouchableOpacity style={styles.button} onPress={handleSubmit}>
         <Text style={styles.buttonText}>Login</Text>
       </TouchableOpacity>
-      <TouchableOpacity>
+      <TouchableOpacity onPress={handleForgotPassword}>
         <Text style={styles.linkText}>Forgot Password?</Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={() => navigation.navigate('SignUpScreen' as never)}>

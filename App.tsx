@@ -13,6 +13,7 @@ import InventoryScreen from './src/screens/InventoryScreen';
 import ItemDetailScreen from './src/screens/ItemDetailScreen';
 import CartScreen from './src/screens/CartScreen';
 import AddItemToInventoryScreen from './src/screens/AddItemToInventoryScreen';
+import ForgotPasswordScreen from './src/screens/ForgotPasswordScreen';
 import { onAuthStateChanged, User } from 'firebase/auth';
 import { auth } from './src/firebase/firebase';
 
@@ -107,6 +108,11 @@ export default function App() {
           name="AddItemToInventoryScreen"
           component={AddItemToInventoryScreen}
           options={{ title: 'Add Item to Inventory' }}
+        />
+        <Stack.Screen
+          name="ForgotPasswordScreen"
+          component={ForgotPasswordScreen}
+          options={{ title: 'Reset Password' }}
         />
       </Stack.Navigator>
     </NavigationContainer>
