@@ -10,6 +10,8 @@ import ManagerHomeScreen from './src/screens/ManagerHomeScreen';
 import CustomerHomeScreen from './src/screens/CustomerHomeScreen';
 import UserProfileScreen from './src/screens/UserProfileScreen';
 import InventoryScreen from './src/screens/InventoryScreen';
+import ItemDetailScreen from './src/screens/ItemDetailScreen';
+import CartScreen from './src/screens/CartScreen';
 import { onAuthStateChanged, User } from 'firebase/auth';
 import { auth } from './src/firebase/firebase';
 
@@ -18,30 +20,88 @@ const Stack = createStackNavigator();
 
 // Root component
 export default function App() {
-  
-  const [user,setUser] = useState<User | null> (null); 
+
+  const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       setUser(user);
-      console.log("user:",user);
+      console.log("user:", user);
     });
   })
-
-  //{user ? () : ()}  //to use for checking ned to get user tyee first
 
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="WelcomeScreen">
-        <Stack.Screen name="WelcomeScreen" component={WelcomeScreen} options={{ title: 'ShopSmart' }} />
-        <Stack.Screen name="LoginScreen" component={LoginScreen} options={{ title: 'Login to continue' }} />
-        <Stack.Screen name="SignUpScreen" component={SignUpScreen} options={{ title: 'Create a new account' }} />
-        <Stack.Screen name="LogInPartnerScreen" component={LogInPartnerScreen} options={{ title: 'Login as Partner' }} />
-        <Stack.Screen name="SignupPartnerScreen" component={SignupPartnerScreen} options={{ title: 'Create a new account as Partner' }} />
-        <Stack.Screen name="ManagerHomeScreen" component={ManagerHomeScreen} options={{ title: 'Inventory' }} />
-        <Stack.Screen name="CustomerHomeScreen" component={CustomerHomeScreen} options={{ title: 'All Shops' }} />
-        <Stack.Screen name="UserProfileScreen" component={UserProfileScreen} options={{ title: 'My Profile' }} />
-        <Stack.Screen name="InventoryScreen" component={InventoryScreen} options={{ title: 'Shop for items' }} />
+        <Stack.Screen
+          name="WelcomeScreen"
+          component={WelcomeScreen}
+          options={{ title: 'ShopSmart' }}
+        />
+        <Stack.Screen
+          name="LoginScreen"
+          component={LoginScreen}
+          options={{
+            title: 'Login to continue',
+            headerLeft: () => null,
+          }}
+        />
+        <Stack.Screen
+          name="SignUpScreen"
+          component={SignUpScreen}
+          options={{
+            title: 'Create a new account',
+            headerLeft: () => null,
+          }}
+        />
+        <Stack.Screen
+          name="LogInPartnerScreen"
+          component={LogInPartnerScreen}
+          options={{
+            title: 'Login as Partner',
+            headerLeft: () => null,
+          }}
+        />
+        <Stack.Screen
+          name="SignupPartnerScreen"
+          component={SignupPartnerScreen}
+          options={{ title: 'Create a new account as Partner',
+            headerLeft: () => null
+           }}
+        />
+        <Stack.Screen
+          name="ManagerHomeScreen"
+          component={ManagerHomeScreen}
+          options={{ title: 'Inventory', 
+            headerLeft: () => null
+           }}
+        />
+        <Stack.Screen
+          name="CustomerHomeScreen"
+          component={CustomerHomeScreen}
+          options={{ title: 'All Shops', 
+            headerLeft: () => null }}
+        />
+        <Stack.Screen
+          name="UserProfileScreen"
+          component={UserProfileScreen}
+          options={{ title: 'My Profile' }}
+        />
+        <Stack.Screen
+          name="InventoryScreen"
+          component={InventoryScreen}
+          options={{ title: 'Shop for items' }}
+        />
+        <Stack.Screen
+          name="ItemDetailScreen"
+          component={(ItemDetailScreen)}
+          options={{ title: 'Item Details' }}
+        />
+        <Stack.Screen
+          name="CartScreen"
+          component={CartScreen}
+          options={{ title: 'My Cart' }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
