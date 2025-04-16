@@ -1,14 +1,26 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, TextInput, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import {
+  View,
+  Text,
+  FlatList,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  Image,
+} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { getCustomerShops } from '../controllers/CustomerHomeController';
+import { getCustomerShops, Shop } from '../controllers/CustomerHomeController';
 
 const CustomerHomeScreen = () => {
-  const [shops, setShops] = useState<{ id: string; name: string }[]>([]);
+  const [shops, setShops] = useState<Shop[]>([]);
   const navigation = useNavigation();
 
   useEffect(() => {
-    setShops(getCustomerShops());
+    const fetchShops = async () => {
+      const fetchedShops = await getCustomerShops();
+      setShops(fetchedShops);
+    };
+    fetchShops();
   }, []);
 
   return (
@@ -28,10 +40,20 @@ const CustomerHomeScreen = () => {
         data={shops}
         renderItem={({ item }) => (
           <View style={styles.shopItemContainer}>
-            <TouchableOpacity onPress={() => navigation.navigate('InventoryScreen' as never)}>
+            <TouchableOpacity
+              onPress={() =>
+                // @ts-ignore
+                navigation.navigate('InventoryScreen' as never, {
+                  ownerUid: item.ownerUid,
+                  shopName: item.name,
+                } as never)
+              }
+            >
               <View style={styles.shopItem}>
                 <Image
-                  source={{ uri: `https://placehold.co/1000x200/B3D9FF/007BFF/png?text=${item.name}` }}
+                  source={{
+                    uri: `https://placehold.co/1000x200/B3D9FF/007BFF/png?text=${item.name}`,
+                  }}
                   style={styles.shopImage}
                 />
               </View>
@@ -39,7 +61,7 @@ const CustomerHomeScreen = () => {
             </TouchableOpacity>
           </View>
         )}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item.ownerUid}
         numColumns={2}
       />
     </View>
