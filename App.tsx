@@ -14,6 +14,7 @@ import ItemDetailScreen from './src/screens/ItemDetailScreen';
 import CartScreen from './src/screens/CartScreen';
 import AddItemToInventoryScreen from './src/screens/AddItemToInventoryScreen';
 import ForgotPasswordScreen from './src/screens/ForgotPasswordScreen';
+import ManagerItemDetailScreen from './src/screens/ManagerItemDetailScreen';
 import { onAuthStateChanged, User } from 'firebase/auth';
 import { auth } from './src/firebase/firebase';
 
@@ -114,6 +115,11 @@ export default function App() {
           component={ForgotPasswordScreen}
           options={{ title: 'Reset Password' }}
         />
+        <Stack.Screen
+          name="ManagerItemDetailScreen"
+          component={ManagerItemDetailScreen}
+          options={{ title: 'Edit Item' }}
+          />
       </Stack.Navigator>
     </NavigationContainer>
   );
