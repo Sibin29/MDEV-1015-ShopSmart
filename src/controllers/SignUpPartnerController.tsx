@@ -1,61 +1,68 @@
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import {firestore,auth} from "../firebase/firebase";
-import {addDoc,collection} from "@firebase/firestore";
+import { firestore, auth } from "../firebase/firebase";
+import { addDoc, collection } from "@firebase/firestore";
 
 export const handleSignUp = async (
-    fname: string,
-    lname: string,
-    phone: string,
-    storeName: string,
-    storeNumber: string,
-    address: string,
-    email: string,
-    password: string,
-    rpassword: string
-  ) => {
+  fname: string,
+  lname: string,
+  phone: string,
+  storeName: string,
+  address: string,
+  email: string,
+  password: string,
+  rpassword: string
+) => {
+  if (
+    !fname ||
+    !lname ||
+    !phone ||
+    !storeName ||
+    !address ||
+    !email ||
+    !password ||
+    !rpassword
+  ) {
+    return { success: false, message: 'Please fill all the fields!' };
+  }
 
-    // Add validation logic here as needed
-    
-    if(!(fname) || !(lname) || !(phone) || !(storeName) || !(storeNumber) || !(address) || !(email) || !(password) || !(rpassword)){
-      return { success: false, message: 'Please Fill all the Fields!' };
-    }
-    else if (password !== rpassword) {
-      return { success: false, message: 'Passwords do not match!' };
-    }
-    else{
-      const ref = collection(firestore,"stores");
-      const userauth = auth;
-      let data = {
-        fname: fname,
-        lname: lname,
-        phone: phone,
-        storeName: storeName,
-        storeNumber: storeNumber,
-        address: address,
-        email: email,
-        type: "store",
-      }
+  if (password !== rpassword) {
+    return { success: false, message: 'Passwords do not match!' };
+  }
 
-      try{
-        const response = await createUserWithEmailAndPassword(auth, email, password)
-        .then(async(userCredential) => {
-          // Signed up 
-          const user = userCredential.user;
-          await addDoc(ref,data);
-          return { success: true };
+  try {
+    // Create the user with Firebase Auth
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    const user = userCredential.user;
 
-        })
-        .catch((error) => {
-          const errorCode = error.code;
-          const errorMessage = error.message;
-          return { success: false, message: 'SignUp Failed!' };
-        });
-        return response;
+    // Create store document
+    const storeData = {
+      fname,
+      lname,
+      phone,
+      storeName,
+      address,
+      email,
+      type: "store",
+      uid: user.uid,
+    };
 
-      }
-      catch(error){
-        console.log(error);
-      } 
-    }
-  };
-  
+    const storeRef = collection(firestore, "stores");
+    await addDoc(storeRef, storeData);
+
+    // Create shop document
+    const shopData = {
+      shopName: storeName,
+      ownerUid: user.uid,
+      createdAt: new Date(),
+    };
+
+    const shopRef = collection(firestore, "shops");
+    await addDoc(shopRef, shopData);
+
+    return { success: true };
+
+  } catch (error: any) {
+    console.error("SignUp Error:", error.message);
+    return { success: false, message: 'SignUp Failed!' };
+  }
+};

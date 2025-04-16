@@ -1,9 +1,9 @@
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 
-export const handleLogin = async (email: string, password: string, storenum: string) => {
+export const handleLogin = async (email: string, password: string) => {
 
     // Validate email, password, and store number (add more validations if needed)
-    if (!email || !password || !storenum) {
+    if (!email || !password) {
       return { success: false, message: 'Please fill in all fields!' };
     }
     else{

@@ -1,4 +1,5 @@
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { use } from "react";
 
 export const handleLogin = async (email: string, password: string) => {
     // Validate email and password here (add more validations if needed)
@@ -13,6 +14,7 @@ export const handleLogin = async (email: string, password: string) => {
             .then((userCredential) => {
               // Logged in 
               const user = userCredential.user;
+              
               return { success: true };
             })
             .catch((error) => {

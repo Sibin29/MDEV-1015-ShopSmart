@@ -2,19 +2,22 @@ import React, { useState } from 'react';
 import { View, TextInput, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { handleLogin } from '../controllers/LogInPartnerController';
+import { Alert } from 'react-native';
 
 const LogInPartnerScreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [storenum, setStorenum] = useState('');
+
   const navigation = useNavigation();
 
   const handleSubmit = async () => {
-    const result = await handleLogin(email, password, storenum);
+    const result = await handleLogin(email, password);
     if (result.success) {
       navigation.navigate('ManagerHomeScreen' as never);
     } else {
-      alert(result.message);
+      if ('message' in result) {
+        Alert.alert(result.message);
+      }
     }
   };
 
@@ -34,13 +37,6 @@ const LogInPartnerScreen = () => {
         value={password}
         onChangeText={setPassword}
         secureTextEntry
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Store Number"
-        value={storenum}
-        onChangeText={setStorenum}
-        keyboardType="numeric"
       />
       <TouchableOpacity style={styles.button} onPress={handleSubmit}>
         <Text style={styles.buttonText}>Login</Text>
@@ -93,3 +89,4 @@ const styles = StyleSheet.create({
 });
 
 export default LogInPartnerScreen;
+

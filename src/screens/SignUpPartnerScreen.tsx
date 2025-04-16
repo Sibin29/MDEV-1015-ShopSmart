@@ -8,7 +8,6 @@ const SignUpPartnerScreen = () => {
   const [lname, setLname] = useState('');
   const [phone, setPhone] = useState('');
   const [storeName, setStoreName] = useState('');
-  const [storeNumber, setStoreNumber] = useState('');
   const [address, setAddress] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -18,7 +17,7 @@ const SignUpPartnerScreen = () => {
   const handleSubmit = async () => {
     try {
       const result = await handleSignUp(
-        fname, lname, phone, storeName, storeNumber, address, email, password, rpassword
+        fname, lname, phone, storeName, address, email, password, rpassword
       );
 
       if (result.success) {
@@ -58,12 +57,7 @@ const SignUpPartnerScreen = () => {
         value={storeName}
         onChangeText={setStoreName}
       />
-      <TextInput
-        style={styles.input}
-        placeholder="Store Number"
-        value={storeNumber}
-        onChangeText={setStoreNumber}
-      />
+      
       <TextInput
         style={styles.input}
         placeholder="Store Address"
@@ -136,4 +130,11 @@ const styles = StyleSheet.create({
 
 export default SignUpPartnerScreen;
 
+function alert(message: string | undefined) {
+  if (message) {
+    console.log(message);
+  } else {
+    console.log('An unknown error occurred.');
+  }
+}
 
