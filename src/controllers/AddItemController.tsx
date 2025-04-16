@@ -38,7 +38,7 @@ export const addItemToInventory = async (
 
     // Add the new item to the inventory array
     await updateDoc(shopRef, {
-      inventory: arrayUnion({ itemName, quantity, price })
+      inventory: arrayUnion({ itemName, quantity, price, shopOwnerUid: userId }),
     });
 
     Alert.alert('Success', 'Item added to inventory!');
