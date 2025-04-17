@@ -15,10 +15,10 @@ const ForgotPasswordScreen = () => {
 
     const success = await resetpassword(email);
     if (success) {
-      Alert.alert('Success', 'Password reset link has been sent to your email.');
+      //Alert.alert('Success', 'Password reset link has been sent to your email.');
       navigation.navigate('LoginScreen' as never);
     } else {
-      Alert.alert('Error', 'An error occurred while resetting your password.');
+      //Alert.alert('Error', 'An error occurred while resetting your password.');
     }
   };
 
