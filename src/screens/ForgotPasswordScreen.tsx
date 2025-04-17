@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { sendPasswordResetEmail } from '../controllers/ForgotPasswordController';
+import { resetpassword } from '../controllers/ForgotPasswordController';
 
 const ForgotPasswordScreen = () => {
   const [email, setEmail] = useState<string>('');
@@ -13,7 +13,7 @@ const ForgotPasswordScreen = () => {
       return;
     }
 
-    const success = await sendPasswordResetEmail(email);
+    const success = await resetpassword(email);
     if (success) {
       Alert.alert('Success', 'Password reset link has been sent to your email.');
       navigation.navigate('LoginScreen' as never);
